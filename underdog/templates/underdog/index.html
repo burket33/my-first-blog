@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}Underdog Pool{% endblock %}
+
+{% block content %}
+<div class="page-header" id="banner">
+	<div class="row">
+		<div class="col-lg-8 col-md-7 col-sm-6">
+            <h1>The Underdog Pool</h1>
+            <p class="lead">Welcome to The Underdog Pool 2018</p>
+			{% if not user.is_authenticated %}
+				<a class="btn btn-secondary my-2 my-sm-0" href="{% url 'login' %}">Log In</a>
+			{% endif %}
+         </div>
+	</div>
+</div>
+{% endblock %}

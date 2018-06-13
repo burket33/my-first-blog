@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block title %}Scoreboard{% endblock %}
+
+{% block content %}
+<h2> Scoreboard </h2>
+{% if person_point_list.0.2 %}
+	<h4>Week {{person_point_list.0.2}}</h4>
+{% else %}
+	<h4>Overall Score</h4>
+{% endif %}
+<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+	<div class="btn-group mr-2" role="group" aria-label="First group">
+		<h5>Week</h5>
+		{% for week in weeks %}
+			<button type="button" class="btn btn-secondary">
+				<a href="{% url 'underdog:weekly_scoreboard' week %}">{{week}}</a>
+			</button>
+		{% endfor %}
+	</div>
+</div>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th scope="col"></th>
+			<th scope="col">Player</th>
+			<th scope="col">Score</th>
+
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in person_point_list %}
+			<tr class="table-active">
+				<th scope="row"></th>
+				<td>{{item.0}}</td>
+				<td>{{item.1}}</td>
+
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
