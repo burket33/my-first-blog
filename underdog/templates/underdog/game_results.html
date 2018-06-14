@@ -14,28 +14,30 @@
 		{% endfor %}
 	</div>
 </div>
-<table class="table table-hover">
-	<thead>
-		<tr>
-			<th scope="col"></th>
-			<th scope="col">Favorite</th>
-			<th scope="col">Score</th>
-			<th scope="col">Underdog</th>
-			<th scope="col">Score</th>
-			<th scope="col">Points For Pick</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for game in game_results %}
-			<tr class="table-active">
-				<th scope="row"></th>
-				<td>{{game.matchup.favorite.name}}</td>
-				<td>{{game.favorite_score}}</td>
-				<td>{{game.matchup.underdog.name}}</td>
-				<td>{{game.underdog_score}}</td>
-				<td>{{game.points_for_pick}}</td>
+<div class="table-responsive">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th scope="col"></th>
+				<th scope="col">Favorite</th>
+				<th scope="col">Score</th>
+				<th scope="col">Underdog</th>
+				<th scope="col">Score</th>
+				<th scope="col">Points For Pick</th>
 			</tr>
-		{% endfor %}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			{% for game in game_results %}
+				<tr class="table-active">
+					<th scope="row"></th>
+					<td>{{game.matchup.favorite.name}}</td>
+					<td>{{game.favorite_score}}</td>
+					<td>{{game.matchup.underdog.name}}</td>
+					<td>{{game.underdog_score}}</td>
+					<td>{{game.points_for_pick}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
 {% endblock %}
