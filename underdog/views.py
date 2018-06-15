@@ -74,11 +74,16 @@ def selection(request):
 
 @login_required
 def game_results(request):
+	
 	game_results = GameResult.objects.order_by('-matchup__week')
-	current_week = game_results[0].matchup.week
-	game_results = GameResult.objects.filter(matchup__week = current_week)
-	weeks = list_weeks(current_week)
-	return render(request, 'underdog/game_results.html', {'game_results' : game_results, 'weeks': weeks,})
+	if len(game_results) == 0:
+		messages.add_message(request, messages.INFO, 'No Game Results have been entered at this time')
+		return HttpResponseRedirect(reverse('underdog:index'))
+	else:
+		current_week = game_results[0].matchup.week
+		game_results = GameResult.objects.filter(matchup__week = current_week)
+		weeks = list_weeks(current_week)
+		return render(request, 'underdog/game_results.html', {'game_results' : game_results, 'weeks': weeks,})
 
 @login_required	
 def weekly_game_results(request, week):
@@ -91,20 +96,24 @@ def weekly_game_results(request, week):
 @login_required
 def scoreboard (request):
 	game_results = GameResult.objects.order_by('-matchup__week')
-	current_week = game_results[0].matchup.week
-	weeks = list_weeks(current_week)
-	person_point_list = []
-	persons = User.objects.all()
-	for person in persons:
-		total_points = 0
-		picks = Pick.objects.filter(person = person)
-		for pick in picks:
-			week_points = GameResult.objects.get(matchup = pick.matchup).points_for_pick
-			total_points = total_points + week_points
-		temp_hold = [person, total_points]
-		person_point_list.append(temp_hold)
-	person_point_list.sort(key=lambda x: -x[1])
-	return render(request, 'underdog/scoreboard.html', {'person_point_list': person_point_list, 'weeks': weeks,})
+	if len(game_results) == 0:
+		messages.add_message(request, messages.INFO, 'No Game Results have been entered at this time, so no scores are available')
+		return HttpResponseRedirect(reverse('underdog:index'))
+	else:
+		current_week = game_results[0].matchup.week
+		weeks = list_weeks(current_week)
+		person_point_list = []
+		persons = User.objects.all()
+		for person in persons:
+			total_points = 0
+			picks = Pick.objects.filter(person = person)
+			for pick in picks:
+				week_points = GameResult.objects.get(matchup = pick.matchup).points_for_pick
+				total_points = total_points + week_points
+			temp_hold = [person, total_points]
+			person_point_list.append(temp_hold)
+		person_point_list.sort(key=lambda x: -x[1])
+		return render(request, 'underdog/scoreboard.html', {'person_point_list': person_point_list, 'weeks': weeks,})
 	
 @login_required
 def weekly_scoreboard (request, week):
