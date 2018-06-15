@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 
 from underdog.models import NFLTeam
 
-def import_game_results(xml_filestring, week):
+def import_NFL_Teams(xml_filestring, week):
 	xml_doc = xml_filestring
 	
 	tree = ET.parse(xml_doc)
