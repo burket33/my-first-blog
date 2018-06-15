@@ -34,7 +34,7 @@ def matchups(request):
 	except (KeyError, Pick.DoesNotExist):
 		person_week_pick = None
 	matchups = Matchup.objects.filter(week = current_week)
-	dt = timedelta(days = -367) # simply used for debugging can remove when pushing out
+	dt = timedelta(days = 0) # simply used for debugging can remove when pushing out
 	time_now = timezone.now() + dt
 	blank_out = blank_out_matchups(time_now)
 	for matchup in matchups:
