@@ -1,6 +1,18 @@
+
+from django.core.management.base import BaseCommand
+
 import xml.etree.ElementTree as ET
 
 from underdog.models import NFLTeam
+
+class Command(BaseCommand):
+
+	def add_arguments(self, parser):
+		parser.add_argument('xml_filestring')
+
+	def handle(self, **options):
+		xml_filestring = options['xml_filestring']
+		import_NFL_Teams(xml_filestring)
 
 def import_NFL_Teams(xml_filestring):
 	xml_doc = xml_filestring
@@ -22,6 +34,3 @@ def import_NFL_Teams(xml_filestring):
 			away_team.save()
 	
 	return xml_dict
-
-
-	

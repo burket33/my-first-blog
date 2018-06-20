@@ -1,3 +1,5 @@
+from django.core.management.base import BaseCommand
+
 import csv
 import xml.etree.ElementTree as ET
 from django.core.exceptions import ObjectDoesNotExist
@@ -5,6 +7,18 @@ from datetime import datetime
 
 from underdog.models import NFLTeam, Matchup, GameResult
 
+class Command(BaseCommand):
+
+	def add_arguments(self, parser):
+		parser.add_argument('xml_filestring')
+		parser.add_argument('week')
+	
+	def handle(self, *args, **options):
+		xml_filestring = options['xml_filestring']
+		week = options['week']
+		import_game_results(xml_filestring, week)
+		
+		
 def import_game_results(xml_filestring, week):
 	xml_doc = xml_filestring
 	

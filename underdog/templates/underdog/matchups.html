@@ -3,72 +3,74 @@
 {% block title %}Matchups{% endblock %}
 
 {% block content %}
-{% if blank_out %}
-	<p> picks have been locked for Week {{ matchups.0.week }}.</br>your pick is {{ person_week_pick.matchup.favorite.name }} vs {{ person_week_pick.matchup.underdog.name }} </p>
-{% else %}
-	<h3> Week {{ matchups.0.week }} </h3>
-	{% if person_week_pick %}
-		<div class="alert alert-dismissible alert-warning">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			<h4 class="alert-heading"> Current pick is {{ person_week_pick.matchup.favorite.name }} vs {{ person_week_pick.matchup.underdog.name }}</h4>
-		</div>
-	{% endif %}
-		<div class="table-responsive">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th scope="col">Selection</th>
-						<th scope="col">Favorite</th>
-						<th scope="col">Underdog</th>
-						<th scope="col">Spread</th>
-						<th scope="col">Game Time</th>
-					</tr>
-				</thead>
-				<tbody>
-					<form action="{% url 'underdog:selection' %}" method= "post">
-					<input type = "hidden" name ="pick_id" id ="pick_id" value ="{{person_week_pick.id}}"/>
-					{% csrf_token %}
-					{% for matchup in matchups %}
-						<tr class="table-active">
-							<th scope="row">
-								<div class="form-group">
-									{% if person_week_pick.matchup == matchup %}
-										<div class="custom-control custom-radio">
-											<input type="radio" name="matchup" id="matchup{{ forloop.counter }}" value="{{matchup.id}}" class= "custom-control-input" checked="" disabled=""/>
-											<label class="custom-control-label" for="matchup{{ forloop.counter }}">&nbsp;</label>
-										</div>
-									{% elif matchup.started %}
-										<div class="custom-control custom-radio">
-											<input type="hidden" name="matchup" id="matchup{{ forloop.counter }}" value="{{matchup.id}}" class= "custom-control-input" disabled=""/>
-											<label class="custom-control-label" for="matchup{{ forloop.counter }}">&nbsp;</label>
-										</div>
-									{% else %}
-										<div class="custom-control custom-radio">
-											<input type="radio" name="matchup" id="matchup{{ forloop.counter }}" value="{{matchup.id}}" class= "custom-control-input"/>
-											<label class="custom-control-label" for="matchup{{ forloop.counter }}">&nbsp</label>
-										</div>
-									{% endif %}
-								</div>
-							</th>
-							{% if matchup.home_team == 'FAV_TEAM' %}
-								<td>AT {{matchup.favorite}}</td>
-								<td> {{matchup.underdog}}</td>
-							{% else %}
-								<td>{{matchup.favorite}}</td>
-								<td> AT {{matchup.underdog}}</td>
-							{% endif %}
-							<td>{{matchup.spread}}</td>
-							<th>{{ matchup.game_time|date:"l F j g:i A" }}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		{% if person_week_pick %}
-			<input type="submit" value="Change Pick" />
-		{% elif person_week_pick == None %}
-			<input type="submit" value="Submit Pick" />
-		{% endif %}
-		</form>
+{% if blank_out or person_week_pick.started %}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		<p> Your pick has been locked for Week {{ matchups.0.week }}.</br>Your pick is {{ person_week_pick.matchup.favorite.name }} vs {{ person_week_pick.matchup.underdog.name }} </p>
+	</div>
 {% endif %}
+<h3> Week {{ matchups.0.week }} </h3>
+{% if person_week_pick %}
+	<div class="alert alert-dismissible alert-warning">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		<h4 class="alert-heading"> Current pick is {{ person_week_pick.matchup.favorite.name }} vs {{ person_week_pick.matchup.underdog.name }}</h4>
+	</div>
+{% endif %}
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Selection</th>
+					<th scope="col">Favorite</th>
+					<th scope="col">Underdog</th>
+					<th scope="col">Spread</th>
+					<th scope="col">Game Time</th>
+				</tr>
+			</thead>
+			<tbody>
+				<form action="{% url 'underdog:selection' %}" method= "post">
+				<input type = "hidden" name ="pick_id" id ="pick_id" value ="{{person_week_pick.id}}"/>
+				{% csrf_token %}
+				{% for matchup in matchups %}
+					<tr class="table-active">
+						<th scope="row">
+							<div class="form-group">
+								{% if person_week_pick.matchup == matchup %}
+									<div class="custom-control custom-radio">
+										<input type="radio" name="matchup" id="matchup{{ forloop.counter }}" value="{{matchup.id}}" class= "custom-control-input" checked="" disabled=""/>
+										<label class="custom-control-label" for="matchup{{ forloop.counter }}">&nbsp;</label>
+									</div>
+								{% elif matchup.started or person_week_pick.started or blank_out %}
+									<div class="custom-control custom-radio">
+										<input type="hidden" name="matchup" id="matchup{{ forloop.counter }}" value="{{matchup.id}}" class= "custom-control-input" disabled=""/>
+										<label class="custom-control-label" for="matchup{{ forloop.counter }}">&nbsp;</label>
+									</div>
+								{% else %}
+									<div class="custom-control custom-radio">
+										<input type="radio" name="matchup" id="matchup{{ forloop.counter }}" value="{{matchup.id}}" class= "custom-control-input"/>
+										<label class="custom-control-label" for="matchup{{ forloop.counter }}">&nbsp</label>
+									</div>
+								{% endif %}
+							</div>
+						</th>
+						{% if matchup.home_team == 'FAV_TEAM' %}
+							<td>AT {{matchup.favorite}}</td>
+							<td> {{matchup.underdog}}</td>
+						{% else %}
+							<td>{{matchup.favorite}}</td>
+							<td> AT {{matchup.underdog}}</td>
+						{% endif %}
+						<td>{{matchup.spread}}</td>
+						<th>{{ matchup.game_time|date:"l F j g:i A" }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% if person_week_pick %}
+		<input type="submit" value="Change Pick" />
+	{% elif person_week_pick == None %}
+		<input type="submit" value="Submit Pick" />
+	{% endif %}
+	</form>
 {% endblock %}

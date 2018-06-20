@@ -1,8 +1,21 @@
+from django.core.management.base import BaseCommand
+
 from datetime import datetime
 
 from bs4 import BeautifulSoup
 
 from underdog.models import NFLTeam, Matchup
+
+class Command(BaseCommand):
+
+	def add_arguments(self, parser):
+		parser.add_argument('html_filestring')
+		parser.add_argument('week')
+	
+	def handle(self, *args, **options):
+		html_filestring = options['html_filestring']
+		week = options['week']
+		import_matchups(html_filestring, week)
 
 def import_matchups(html_filestring, week):
 

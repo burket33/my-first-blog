@@ -25,17 +25,19 @@ class IndexView(generic.ListView):
 @login_required	
 def matchups(request):
 	matchups = Matchup.objects.order_by('-week')
+	dt = timedelta(days = 0) # simply used for debugging can remove when pushing out
+	time_now = timezone.now() + dt
 	if request.user.is_authenticated:
 		user = request.user
 	current_week = matchups[0].week
 	person_picks = Pick.objects.filter(person = user)
 	try:
 		person_week_pick = person_picks.get(matchup__week = current_week)
+		if time_now > person_week_pick.matchup.game_time:
+			person_week_pick.started = True
 	except (KeyError, Pick.DoesNotExist):
 		person_week_pick = None
 	matchups = Matchup.objects.filter(week = current_week)
-	dt = timedelta(days = 0) # simply used for debugging can remove when pushing out
-	time_now = timezone.now() + dt
 	blank_out = blank_out_matchups(time_now)
 	for matchup in matchups:
 		if time_now > matchup.game_time:
@@ -162,12 +164,11 @@ def list_weeks(current_week):
 
 #function to not return variable controlling whether to show the matchups or not	
 def blank_out_matchups(time_now):
-	blank_out_days = [0, 1] #blankout days Mon, Tues, Wed, and Sun
+	blank_out_days = [0, 1] #blankout day Monday
+	
 	if time_now.weekday() in blank_out_days:
 		blank_out = True
-	elif time_now.weekday() == 6 and time_now.hour >= 1 and time_now.minute > 15:
-		blank_out = True
-	elif time_now.weekday() == 2 and time_now.hour < 1:
+	elif time_now.weekday() == 6 and time_now.hour >= 13 and time_now.minute > 00:
 		blank_out = True
 	else:
 		blank_out = False
