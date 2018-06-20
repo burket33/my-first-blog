@@ -11,9 +11,15 @@ class Command(BaseCommand):
 		parser.add_argument('xml_filestring')
 
 	def handle(self, **options):
-		xml_filestring = options['xml_filestring']
-		import_NFL_Teams(xml_filestring)
+		create_NFLTeam()
+		#xml_filestring = options['xml_filestring']
+		#import_NFL_Teams(xml_filestring)
 
+		
+def create_NFLTeam():
+	team=NFLTeam(name= "Timohty", city="TIM")
+	team.save()
+		
 def import_NFL_Teams(xml_filestring):
 	xml_doc = xml_filestring
 	
