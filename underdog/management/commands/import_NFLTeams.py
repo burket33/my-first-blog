@@ -7,8 +7,8 @@ from underdog.models import NFLTeam
 
 class Command(BaseCommand):
 
-	def add_arguments(self, parser):
-		parser.add_argument('xml_filestring')
+	#def add_arguments(self, parser):
+		#parser.add_argument('xml_filestring')
 
 	def handle(self, **options):
 		create_NFLTeam()
