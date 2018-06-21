@@ -110,8 +110,9 @@ def scoreboard (request):
 			total_points = 0
 			picks = Pick.objects.filter(person = person)
 			for pick in picks:
-				week_points = GameResult.objects.get(matchup = pick.matchup).points_for_pick
-				total_points = total_points + week_points
+				if pick.matchup.week < current_week:
+					week_points = GameResult.objects.get(matchup = pick.matchup).points_for_pick
+					total_points = total_points + week_points
 			temp_hold = [person, total_points]
 			person_point_list.append(temp_hold)
 		person_point_list.sort(key=lambda x: -x[1])
