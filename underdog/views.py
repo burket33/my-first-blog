@@ -14,14 +14,10 @@ from django.core.mail import send_mail
 from .models import NFLTeam, Matchup, Pick, GameResult
 from .forms import SignUpForm
 
-class IndexView(generic.ListView):
-	template_name = 'underdog/index.html'
-	context_object_name = 'list_NFLTeam'
-	
-	def get_queryset(self):
-		"""Returns list of every NFL Team"""
-		return NFLTeam.objects.order_by('id')
-	
+def index(request):
+	return render(request, 'underdog/index.html',)
+
+
 @login_required	
 def matchups(request):
 	matchups = Matchup.objects.order_by('-week')
@@ -53,7 +49,6 @@ def selection(request):
 	except (KeyError, Matchup.DoesNotExist):
 		messages.add_message(request, messages.INFO, 'No change to selection')
 		return HttpResponseRedirect(reverse('underdog:matchups'))
-		#return render(request, 'underdog/matchups.html', {'matchups':matchups, 'error_massage': "matchup does not exist"})
 	else:
 		person = request.user
 		if request.POST['pick_id']:
@@ -63,6 +58,7 @@ def selection(request):
 		else:
 			pick = Pick(person = person, matchup = selected_matchup)
 		pick.save()
+		# save a log of when each pick is made
 		send_mail(
 			'Pick Confirmation for Week # {}'.format(selected_matchup.week),
 			'Your pick is {}'.format(selected_matchup),

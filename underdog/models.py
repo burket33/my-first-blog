@@ -9,6 +9,7 @@ class NFLTeam(models.Model):
 	
 	def __str__(self):
 		return self.name
+
 		
 class Matchup(models.Model):
 	HOME_TEAM_CHOICES = (('FAV_TEAM', 'Favorite'), ('UNDER_TEAM', 'Underdog'))
@@ -34,6 +35,9 @@ class Pick(models.Model):
 	def __str__(self):
 		pick_display = str(self.person) + ' ' + str(self.matchup)
 		return pick_display
+		
+	def week(self):
+		return self.matchup.week
 		
 class GameResult(models.Model):
 	HOME_TEAM_CHOICES = (('FAV_TEAM', 'Favorite'), ('UNDER_TEAM', 'Underdog'))

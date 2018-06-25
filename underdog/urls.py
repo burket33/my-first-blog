@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'underdog'
 urlpatterns = [
-	path('', views.IndexView.as_view(), name = 'index'),
+	path('', views.index, name = 'index'),
 	path('matchups/', views.matchups, name = 'matchups'),
 	#ex: /matchups/selection
 	path('matchups/selection/', views.selection, name='selection'),
