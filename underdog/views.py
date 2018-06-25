@@ -129,8 +129,6 @@ def weekly_scoreboard (request, week):
 					week_points = GameResult.objects.get(matchup = pick.matchup).points_for_pick
 				except (KeyError, Matchup.DoesNotExist):
 					week_points = 0
-			else:
-				week_points = 0
 		temp_hold = [person, week_points, week]
 		person_point_list.append(temp_hold)
 	person_point_list.sort(key=lambda x: -x[1])
